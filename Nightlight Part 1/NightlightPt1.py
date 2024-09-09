@@ -68,18 +68,18 @@ class Nightlight:
 
     #method to beep buzzer for short duration
     def beep_buzzer(self):
-        self.buzzer.value(1)
-        time.sleep(0.1)
-        self.buzzer.value(0)
+        self.buzzer.freq(freq)
+        self.buzzer.duty_u16(512)
 
     #method to check if the button is in pressed position (0 when pressed with PULL_UP)
     def check_button(self):
         if self.button.value() == 0:
             print("Button pressed!")  # debugging statement
             self.change_neopixel() # trigger color change
-            self.beep_buzzer() #beep button
+            self.beep_buzzer(440) #beep button
             #delay to prevent multiple actions on a single press
             time.sleep(0.5)
+            self.buzzer.duty_u16(0)
 
     #method for mqtt start and stop
     def handle_mqtt(self, message):
