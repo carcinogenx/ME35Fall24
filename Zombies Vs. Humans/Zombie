@@ -1,0 +1,38 @@
+import time
+from BLE_Minimal import Yell 
+from machine import Pin, PWM
+
+# set up buzzer
+buzzer = PWM(Pin(18))
+
+# start the buzzer
+def start_buzzer():
+    buzzer.freq(440)  # Set frequency to 440 Hz (A4, typical buzzer tone)
+    buzzer.duty_u16(500)  # Set the volume (adjust as needed)
+
+# stop the buzzer
+def stop_buzzer():
+    buzzer.duty_u16(0)  # Turn off the buzzer
+
+# advertise as zombie
+def advertise_as_zombie():
+    p = Yell()
+    team_number = '!1'
+    
+    # advertise 10 times per sec while the buzzer plays
+    for i in range(1000):  # Adjust the loop as needed
+        p.advertise(team_number)
+        print(f"Advertising as zombie with team number {team_number}")
+        time.sleep(0.1)  # Advertise every 0.1 seconds (10 times per second)
+
+    # stop advertising
+    p.stop_advertising()
+
+# start buzzer
+start_buzzer()
+
+# start advertising
+advertise_as_zombie()
+
+# stop buzzer
+stop_buzzer()
