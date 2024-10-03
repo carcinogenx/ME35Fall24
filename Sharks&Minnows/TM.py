@@ -14,20 +14,17 @@ def get_predictions(num_classes):
             predictions.append(divValue)
     return predictions
 
-#initialize mqtt stuff
+#initialize mqtt
 mqtt_broker = 'broker.hivemq.com'
 port = 1883
-topic_sub = '/movement'       # this reads anything sent to ME35
+topic_sub = '/movement'      
 client = mqtt_library.myClient
 print('Connected to %s MQTT broker' % (mqtt_broker))
 import asyncio
-await run_model("https://teachablemachine.withgoogle.com/models/sPXnSlGg8/") #Change to your model link
+await run_model("https://teachablemachine.withgoogle.com/models/sPXnSlGg8/") # model link
 topic_pub = '/movement'
+
 while True:
-    #if ble.connected:
-    #    predictions = get_predictions(2)
-    #    send(predictions)
-    #await asyncio.sleep(2)
     predictions = get_predictions(2)
     values = [float(item.split(': ')[1]) for item in predictions]
     print(values)
@@ -35,4 +32,3 @@ while True:
         client.publish("/movement", "run")
     elif values[1] >= 0.90:
         client.publish("/movement", "stop")
-    #else: send nothing
