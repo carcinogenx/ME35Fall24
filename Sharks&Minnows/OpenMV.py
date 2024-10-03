@@ -6,29 +6,29 @@ MQTT_BROKER = "broker.hivemq.com"
 MQTT_PORT = 1883
 MQTT_TOPIC = "/movement"
 
-# Setup Wi-Fi connection without a password
+# set up wifi connection
 def connect_wifi():
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
     if not wlan.isconnected():
         print('Connecting to Wi-Fi...')
-        wlan.connect(SSID, KEY)  # No password needed
+        wlan.connect(SSID, KEY) 
 
-        # Add a loop to wait until the Wi-Fi is fully connected
+        # wait until wifi is connected
         while not wlan.isconnected():
             time.sleep(1)
             print('Waiting for Wi-Fi connection...')
     print('Wi-Fi connected:', wlan.ifconfig())
 
-# Initialize the MQTT client
+# initialize the mqtt client
 client = mqtt.MQTTClient("ME_35", MQTT_BROKER, port=MQTT_PORT)
 
-# Function to publish movement commands
+# func to publish movement commands
 def publish_command(command):
     client.publish(MQTT_TOPIC, command)
     print("Published command:", command)
 
-# Connect to MQTT Broker with retries
+# connect to mqtt broker
 def connect_mqtt():
     connected = False
     while not connected:
@@ -39,21 +39,21 @@ def connect_mqtt():
             connected = True
         except OSError as e:
             print("Failed to connect to MQTT broker:", e)
-            time.sleep(2)  # Wait and retry after 2 seconds
+            time.sleep(2)  # wait and retry
 
-# Initialize camera
+# initiaize camera
 sensor.reset()
-sensor.set_pixformat(sensor.RGB565)  # or grayscale
-sensor.set_framesize(sensor.QVGA)    # QVGA is faster for image processing
+sensor.set_pixformat(sensor.RGB565)  
+sensor.set_framesize(sensor.QVGA)   
 sensor.skip_frames(time=2000)
 sensor.set_auto_gain(False)
 sensor.set_auto_whitebal(False)
 clock = time.clock()
 
-# Connect to Wi-Fi
+# connect to wifi
 connect_wifi()
 
-# Connect to the MQTT Broker
+# connect to mqtt broker
 connect_mqtt()
 
 # AprilTag family
@@ -61,21 +61,21 @@ tag_families = image.TAG36H11
 
 while True:
     clock.tick()
-    img = sensor.snapshot()  # Capture image
-    for tag in img.find_apriltags(families=tag_families):  # Detect AprilTags
+    img = sensor.snapshot()  # capture image
+    for tag in img.find_apriltags(families=tag_families):  # detect AprilTags
         print("Tag ID:", tag.id)
 
-        # Send MQTT command based on detected tag
+        # send mqtt command based on tag
         if tag.id == 562:
-            publish_command('forward')  # Forward
+            publish_command('forward')  
         elif tag.id == 563:
-            publish_command('left')  # Left
+            publish_command('left')  
         elif tag.id == 564:
-            publish_command('right')  # Right
+            publish_command('right')  
         elif tag.id == 565:
-            publish_command('stop')  # Stop
+            publish_command('stop')  
         elif tag.id == 566:
-            publish_command('reverse')  # Backward
+            publish_command('reverse') 
 
-    time.sleep(0.1)  # Short delay to avoid spamming the broker
+    time.sleep(0.1)  # delay to avoid spamming
 
