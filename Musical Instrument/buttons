@@ -1,0 +1,36 @@
+from machine import Pin
+import time
+
+# Pin setup for buttons (GPIO 0, 1, 2, 3)
+button_1 = Pin(0, Pin.IN, Pin.PULL_UP)
+button_2 = Pin(1, Pin.IN, Pin.PULL_UP)
+button_3 = Pin(2, Pin.IN, Pin.PULL_UP)
+button_4 = Pin(3, Pin.IN, Pin.PULL_UP)
+
+# Pin setup for LEDs (GPIO 4, 5, 6, 7)
+led_1 = Pin(4, Pin.OUT)
+led_2 = Pin(5, Pin.OUT)
+led_3 = Pin(6, Pin.OUT)
+led_4 = Pin(7, Pin.OUT)
+
+# Dictionary to map buttons to notes and LEDs
+notes = {
+    button_1: {"note": "C", "led": led_1},
+    button_2: {"note": "D", "led": led_2},
+    button_3: {"note": "E", "led": led_3},
+    button_4: {"note": "G", "led": led_4}
+}
+
+# Function to read button presses and control LEDs
+def check_buttons():
+    while True:
+        for button, info in notes.items():
+            if not button.value():  # Button pressed (active low)
+                info["led"].on()    # Turn on corresponding LED
+                print(f"Note {info['note']}")
+            else:
+                info["led"].off()   # Turn off LED if not pressed
+        time.sleep(0.01)  # Small delay to prevent high CPU usage
+
+# Run the function
+check_buttons()
