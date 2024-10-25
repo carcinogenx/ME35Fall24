@@ -1,16 +1,16 @@
 import time
-import uasyncio as asyncio 
+import uasyncio as asyncio  # Use uasyncio for MicroPython
 from BLE_CEEO import Yell
 from machine import ADC, Pin
 
 # MIDI Commands
 NoteOn = 0x90
 NoteOff = 0x80
-velocity = {'off': 0, 'f': 80}  # velocity settings
+velocity = {'off': 0, 'f': 80}  # Velocity settings
 
-# light sensor setup
+# Light sensor setup
 ldr_pin = ADC(Pin(27))
-COVERED_THRESHOLD = 1000  
+COVERED_THRESHOLD = 1200  # Value above this means sensor is covered
 
 # Initialize BLE MIDI device
 p = Yell('Pico-MIDI', verbose=True, type='midi')
