@@ -17,11 +17,11 @@ client.connect()
 # publish potentiometer value as volume
 def publish_volume():
     pot_value = pot.read()
-    volume = int((pot_value / 4095) * 127)  # Scale to 0-127 (MIDI volume range)
+    volume = int((pot_value / 4095) * 127)  #0-127 is vol range
     print(f"Publishing volume: {volume}")
     client.publish(PUB_TOPIC, str(volume))
 
 # continuously send volume updates
 while True:
     publish_volume()
-    time.sleep(1)  # Adjust the frequency as needed
+    time.sleep(1) 
